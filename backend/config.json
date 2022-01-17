@@ -1,0 +1,10 @@
+{
+    "port":8000,
+    "database":{
+        "host":"localhost",
+        "user":"root",
+        "password":"password",
+        "database":"Social_Media",
+        "db_port":"3306"
+    }
+}
