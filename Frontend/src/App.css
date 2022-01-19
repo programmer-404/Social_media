@@ -1,16 +1,14 @@
 
 .box-container{
-  align-self: center;
-  justify-self: center;
   display:flex;
   flex-direction: column;
-  margin: auto;
-  margin-top: 25px;
   height:auto;
   width:25rem;
+  margin: auto;
   border-radius: 5px;
-  /* border: 3px dashed rgb(212, 211, 211); */
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  align-self: center;
+  justify-self: center;
+  box-shadow: #0000003d 0px 3px 8px;
 }
 .box-container-register{
   align-self: center;
@@ -18,28 +16,23 @@
   display:flex;
   flex-direction: column;
   margin: auto;
-  margin-top: 25px;
   height:auto;
   width:35rem;
   border-radius: 5px;
-  /* border: 3px dashed rgb(212, 211, 211); */
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
 .label{
-  margin:15px 0px 8px 30px;
+  margin:8px 0px 8px 5%;
   font-family: Arial, Helvetica, sans-serif;
 }
 .input{
   height: 2rem;
   border: 0.5px solid #bbbaba;
   border-radius: 5px;
-  margin: 0px 30px;
+  margin: 0px 5%;
 }
-.input:focus{
-   border: 1px solid #8cf58c; 
-   /* background: green; */
-}
+.input:focus{ border: 1px solid #8cf58c; }
 
 .siteName{
   font-family: 'Moon Dance', cursive;
@@ -50,7 +43,7 @@
 }
 
 .registerBtn,.loginBtn{
-  margin:15px auto;
+  margin:10px auto;
   height: 2rem;
   width:15rem;
   border:none;
@@ -59,4 +52,30 @@
   color:beige;
   border-radius:5px;
   font-family: 'Slabo 27px', serif; 
+  cursor:pointer;
+}
+
+.loginForm{
+  display:flex;
+  flex-direction: column;
+}
+
+p.err_msg{
+  font-size: 0.8rem;
+  margin: 2px 0px 0px 5%;
+}
+
+p.err_msg,.form_err{
+  color: red;
+}
+
+.linker{
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.success_msg{
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 400;
 }

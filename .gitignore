@@ -49,5 +49,5 @@ Thumbs.db
 
 Frontend/node_modules
 backend/node_modules
-# Frontend/package-lock.json
-# backend/package-lock.json
+Frontend/package-lock.json
+backend/package-lock.json

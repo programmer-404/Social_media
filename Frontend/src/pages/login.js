@@ -1,19 +1,24 @@
 import React from 'react'
-import { useState,useRef } from 'react'
+import { useState } from 'react'
 import { loginApi } from '../Api/login';
-import {Link} from "react-router-dom"
+import {Link} from "react-router-dom";
+import {useForm} from "react-hook-form"
 
 export default function Login() {
-    const [username, setusername] = useState("");
-    const [password, setpassword] = useState("");
+    
     const [errmsg, seterrmsg] = useState("")
     const [successmsg, setsuccessmsg] = useState("")
-    const userLogin=async ()=>{
-        if(!username || !password ){
+    const {register,handleSubmit,formState: {errors}}= useForm()
+    const userLogin=async (e)=>{
+        
+        console.log(errors);
+        console.log("Form Data",e);
+        
+        if(!e.username || !e.password ){
             seterrmsg("Please Enter Credentials");
             return false
         }
-        let request = { username,password };
+        let request = { username:e.username,password:e.password };
         let result =await loginApi(request);
         if(!result || !result.status){
             seterrmsg(result.data.message)
@@ -26,14 +31,18 @@ export default function Login() {
     return (
             <div className="box-container">
                 <h1 className='siteName'>Socio</h1>
+                <form  className='loginForm' onSubmit={handleSubmit(userLogin)}> 
                 <label htmlFor="username" className='label'>Username</label>
-                <input type="text" name='username' className='input' value={username} placeholder='Enter Username Here....' onChange={(e)=>{setusername(e.target.value.trim())}}/>
+                <input type="text" {...register('username',{required:true})} className='input' placeholder='Enter Username Here....'  />
+                {errors.username && <p className='err_msg'>Username is required</p>}
                 <label htmlFor="password" className='label'>Password</label>
-                <input type="text" name="password" className='input' value={password} placeholder='Enter Password Here....' onChange={(e)=>{setpassword(e.target.value.trim())}}/>
-                <button className='loginBtn' onClick={()=>{userLogin()}}>Login</button>
+                <input type="password" {...register("password", {required:true})} className='input' placeholder='Enter Password Here....' />
+                {errors.password && <p className='err_msg'>Password is required</p>}
+                <input className='loginBtn' type="submit" value="Login"/>
+                </form>
                 <div>
                     <p>{errmsg ? errmsg : successmsg}</p>
-                    <p>Not a member Register <Link to="/register" >Here...</Link></p>
+                    <p className='linker'>Not a member Register <Link to="/register" >Here...</Link></p>
                 </div>
                 
             </div>

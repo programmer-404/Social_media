@@ -2,31 +2,15 @@ import React from 'react'
 import { useState } from 'react'
 import {Link} from "react-router-dom"
 import registerApi from "../Api/register"
+import {useForm} from "react-hook-form"
 
 export default function Register() {
-    const [username, setusername] = useState("");
-    const [password, setpassword] = useState("");
-    const [fname, setfname] = useState("");
-    const [lname, setlname] = useState("");
-    const [mobileNo, setmobileNo] = useState("")
-    const [email, setemail] = useState("")
     const [errmsg, seterrmsg] = useState("");
     const [successmsg, setsuccessmsg] = useState("");
+    const {register,handleSubmit,formState: {errors}}= useForm();
     
-    const userRegister=async ()=>{
-        if(!username || !password || !email || !mobileNo ){
-            seterrmsg("Please Enter all required fields");
-            return false
-        }
-        if(!/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/.test(email)){
-            seterrmsg("Please Enter Valid Email Address");
-            return false
-        }
-        if (!/^[789]\d{9}$/.test(Number(mobileNo))) {
-            seterrmsg("Please Enter Valid Mobile Number");
-            return false
-        }
-        let request={username,password,fname,lname,mobile_no: mobileNo,email}
+    const userRegister=async (e)=>{
+        let request=e
         let result =await registerApi(request);
         if(!result || !result.status){
             seterrmsg(result.data.message)
@@ -42,22 +26,39 @@ export default function Register() {
     return (
         <div className="box-container-register">
             <div className='siteName'>Socio</div>
-            <label htmlFor="username" className='label'>Username</label>
-            <input type="text" name='username' className='input' value={username} placeholder='Enter Username Here....' onChange={(e)=>{setusername(e.target.value.trim())}}/>
-            <label htmlFor="password" className='label'>Password</label>
-            <input type="password" name="password" className='input' value={password} placeholder='Enter Password Here....' onChange={(e)=>{setpassword(e.target.value.trim())}}/>
-            <label htmlFor="fname" className='label'>First Name</label>
-            <input type="text" name="fname" className='input' value={fname} placeholder='example' onChange={(e)=>{setfname(e.target.value.trim())}}/>
-            <label htmlFor="lname" className='label'>Last Name</label>
-            <input type="text" name="lname" className='input' value={lname} placeholder='Dolby' onChange={(e)=>{setlname(e.target.value.trim())}}/>
-            <label htmlFor="email" className='label'>Email</label>
-            <input type="email" name="email" className='input' value={email} placeholder='abc@example.com' onChange={(e)=>{setemail(e.target.value.trim())}}/>
-            <label htmlFor="mobileNo" className='label'>Mobile Number</label>
-            <input type="tel" name="mobileNo" className='input' placeholder="0000000000" onChange={(e)=>{setmobileNo(e.target.value.trim())}} required/>    
-            <button className='registerBtn' onClick={()=>{userRegister()}}>Register</button>
+            <form className='loginForm' onSubmit={handleSubmit(userRegister)}>
+
+                <label htmlFor="username" className='label'>Username</label>
+                <input type="text" {...register('username', {required:true})} className='input' placeholder='Enter Username Here....' />
+                {errors.username && <p className='err_msg'>Username is required</p>}
+
+                <label htmlFor="password" className='label'>Password</label>
+                <input type="password" {...register("password", {required:true})} className='input' placeholder='Enter Password Here....' />
+                {errors.password && <p className='err_msg'>Password is required</p>}
+
+                <label htmlFor="fname" className='label'>First Name</label>
+                <input type="text" {...register("fname")} className='input' placeholder='example' />
+
+                <label htmlFor="lname" className='label'>Last Name</label>
+                <input type="text" {...register("lname")} className='input' placeholder='Dolby' />
+
+                <label htmlFor="email" className='label'>Email</label>
+                <input type="email" {...register("email", {required:true,pattern:/^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/})} className='input' placeholder='abc@example.com' />
+                {errors.email && <p className='err_msg'>Email is required</p>}
+                {errors.email?.type=="pattern" && <p className='err_msg'>Please Enter Valid Email Id</p>}
+
+                <label htmlFor="mobileNo" className='label'>Mobile Number</label>
+                <input type="tel" {...register("mobile_no", {required:true, pattern:/^[789]\d{9}$/})} className='input' placeholder="0000000000"/>
+                {errors.mobile_no?.type=="pattern" && <p className='err_msg'>Please Enter Valid Mobile Number</p>}
+                {errors.mobile_no && errors.mobile_no?.type !=="pattern" && <p className='err_msg'>Mobile Number is required</p>}
+
+                <input className='registerBtn' type="submit" value="Register"/>
+
+            </form>
             <div>
-                <p>{errmsg ? errmsg : successmsg}</p>
-                <p>Already a member Login <Link to="/login" >Here...</Link></p>
+                {(errmsg ) ? <p className='form_err'>{errmsg}</p>:null}
+                {successmsg ? <p className='success_msg'>{successmsg}</p>:null}
+                <p className='linker'>Already a member Login <Link to="/login" >Here...</Link></p>
             </div>
         </div>
     )
