@@ -1,6 +1,9 @@
 
 const db=require("../dbConnection");
 const encryt_decrypt=require("../encryt_decrypt")
+const jwt=require("jsonwebtoken")
+const config=require("../config.json")
+const common=require("../common/common")
 
 module.exports= class userController{
     constructor(req,apiName){
@@ -77,6 +80,7 @@ module.exports= class userController{
                 return this.response
             }
             let decryptedPassword = await encryt_decrypt.decrypt(result[0].password)
+            let accessToken=jwt.sign(this.requestBody.username,config.authKey)
             console.log("decrypted password",decryptedPassword);
             console.log(decryptedPassword==this.requestBody.password);
             if(decryptedPassword!=this.requestBody.password){
@@ -84,6 +88,7 @@ module.exports= class userController{
                 return this.response
             }
             this.response.status=true
+            this.response.data.token=accessToken
             this.response.data.message="Login Successful"
             return this.response
         }
@@ -92,5 +97,17 @@ module.exports= class userController{
             this.response.data.message="connection timeout"
             return this.response
         }
+    }
+
+    async userDetail(req,res,next){
+        let loginAuth = await common.userAuth(req.headers.accesstoken)
+        
+        if(!loginAuth) {
+            this.response.data.message="Please Login To Continue"
+            return this.response
+        }
+        this.response.data.message="ok";
+        this.response.status=true;
+        return this.response
     }
 }

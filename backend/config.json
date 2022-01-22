@@ -6,5 +6,6 @@
         "password":"password",
         "database":"Social_Media",
         "db_port":"3306"
-    }
+    },
+    "authKey":"AkshayNarkarSocialMedia"
 }

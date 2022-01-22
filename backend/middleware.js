@@ -12,3 +12,9 @@ module.exports.userLogin= async (req, res, next) => {
     let userLoginResp = await userClass.userLogin(req,res,next)
     res.send(userLoginResp)
 }
+
+module.exports.userDetail= async (req, res, next) => {
+    let userClass = new userController(req,"detail");
+    let userDetailResp = await userClass.userDetail(req,res,next)
+    res.send(userDetailResp)
+}

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { loginApi } from '../Api/login';
 import {Link} from "react-router-dom";
 import {useForm} from "react-hook-form"
+import config from "../config.json"
 
 export default function Login() {
     
@@ -26,6 +27,7 @@ export default function Login() {
         }else{
             seterrmsg("")
             setsuccessmsg(result.data.message)
+            window.location.href=`${config.frontendBaseUrl}`
         }
     }
     return (
@@ -44,7 +46,6 @@ export default function Login() {
                     <p>{errmsg ? errmsg : successmsg}</p>
                     <p className='linker'>Not a member Register <Link to="/register" >Here...</Link></p>
                 </div>
-                
             </div>
         
     )
