@@ -12,6 +12,7 @@ router.use(bodyParser.json());
 router.post("/register",cors(),middleware.registerUser)
 router.post("/login",cors(),middleware.userLogin)
 router.post("/userDetail",cors(),middleware.userDetail)
+router.post("/resetPassword",middleware.resetPassword)
 
 router.get("/",function (req,res,next){ res.send("working fine") } )
 module.exports = router;

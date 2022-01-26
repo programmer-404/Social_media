@@ -12,8 +12,11 @@ module.exports= class userController{
         this.apiName=apiName
     }
     async validateRequest(){
-        if(!this.requestBody.username || !this.requestBody.password || ( this.apiName=="register" && !this.requestBody.mobile_no )){
-            
+        if(this.apiName=="reset" && (!this.requestBody.username || !this.requestBody.newPassword)){
+            this.response.data.message = "Required Parameters Missing"
+            return false
+        }
+        if(this.apiName !=="reset" && (!this.requestBody.username || !this.requestBody.password || ( this.apiName=="register" && !this.requestBody.mobile_no ))){
             this.response.data.message="Required Parameters Missing"
             return false
         }
@@ -70,15 +73,8 @@ module.exports= class userController{
             let validation = await this.validateRequest();
             if(!validation) return this.response
             // this.requestBody.password=await encryt_decrypt.encrypt(this.requestBody.password)
-            let query="select * from Social_Media.user where username = ?";
-            let values=[this.requestBody.username];
-            let result = await db.executevaluesquery(query,values);
-            console.log("result",result);
-
-            if(!result || result.length==0){
-                this.response.data.message="Username or Password Wrong"
-                return this.response
-            }
+            let result = await this.validateUsername()
+            if (!result) return this.response
             let decryptedPassword = await encryt_decrypt.decrypt(result[0].password)
             let accessToken=jwt.sign(this.requestBody.username,config.authKey)
             console.log("decrypted password",decryptedPassword);
@@ -99,6 +95,19 @@ module.exports= class userController{
         }
     }
 
+    async validateUsername(){
+        let query="select * from Social_Media.user where username = ?";
+        let values=[this.requestBody.username];
+        let result = await db.executevaluesquery(query,values);
+        console.log("result",result);
+
+        if(!result || result.length==0){
+            this.response.data.message = "Username Not Matched"
+            return false
+        }
+        return result
+    }
+
     async userDetail(req,res,next){
         let loginAuth = await common.userAuth(req.headers.accesstoken)
         
@@ -106,6 +115,18 @@ module.exports= class userController{
             this.response.data.message="Please Login To Continue"
             return this.response
         }
+        this.response.data.message="ok";
+        this.response.status=true;
+        return this.response
+    }
+    
+    async resetPassword(req,res,next){
+        let validation = await this.validateRequest();
+        if(!validation) return this.response
+        let result = await this.validateUsername();
+        if (!result) return this.response
+        this.requestBody.newPassword=await encryt_decrypt.encrypt(this.requestBody.newPassword);
+        let query=
         this.response.data.message="ok";
         this.response.status=true;
         return this.response

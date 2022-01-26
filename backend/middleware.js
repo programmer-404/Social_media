@@ -18,3 +18,9 @@ module.exports.userDetail= async (req, res, next) => {
     let userDetailResp = await userClass.userDetail(req,res,next)
     res.send(userDetailResp)
 }
+
+module.exports.resetPassword= async (req, res, next) => {
+    let userClass = new userController(req,"reset");
+    let passwordResetResp = await userClass.resetPassword(req,res,next)
+    res.send(passwordResetResp)
+}
